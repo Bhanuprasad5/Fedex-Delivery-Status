@@ -2,111 +2,75 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Load the model
-model = pickle.load(open(r"Fedex.pkl", 'rb'))
+model = pickle.load(open(r"Fedex.pkl",'rb'))
 
-# Set page config
-st.set_page_config(page_title="FedEx Delivery Status Prediction", layout="centered")
+st.title("Delivery Status")
 
-# Custom CSS to enhance appearance
-st.markdown("""
-    <style>
-    .main {
-        background-color: #f0f2f6;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 800px;
-        margin: 0 auto;
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    }
-    .stButton>button {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    .stButton>button:hover {
-        background-color: #0056b3;
-    }
-    .st-selectbox label, .st-number-input label, .st-text-input label {
-        font-weight: bold;
-        color: #333;
-    }
-    .st-selectbox, .st-number-input, .st-text-input {
-        border-radius: 5px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
-# Title
-st.title("FedEx Delivery Status Prediction 🚚")
-
-# Subtitle
-st.subheader("Predict whether your FedEx shipment will be on time or delayed")
-
-# Numerical Features
-st.markdown("### Enter Numerical Features")
-numerical_features = ['Carrier_Num', 'Distance']
-input_data = {}
-
-for feature in numerical_features:
-    input_data[feature] = st.number_input(f'{feature}', min_value=0, max_value=10000, value=0)
-
-# Categorical Features
-st.markdown("### Select Categorical Features")
+numerical_features = ['Carrier_Num', 'Distance'] 
 categorical_features = {
-    'Year': [2008],
-    'Month': [1, 2, 3, 4, 5, 6],
+    'Year': [2008], 
+    'Month': [1, 2, 3, 4, 5, 6],  
     'DayofMonth': list(range(1, 32)),
-    'DayOfWeek': list(range(1, 8)),
-    'Carrier_Name': ['WN', 'XE', 'YV', 'OH', 'OO', 'UA', 'US', 'DL', 'EV', 'F9', 'FL', 'HA', 'MQ', 'NW', '9E', 'AA', 'AQ', 'AS', 'B6', 'CO']
+    'DayOfWeek': list(range(1, 8)),  
+    'Carrier_Name': ['WN', 'XE', 'YV', 'OH', 'OO', 'UA', 'US', 'DL', 'EV', 'F9', 'FL',
+       'HA', 'MQ', 'NW', '9E', 'AA', 'AQ', 'AS', 'B6', 'CO']
 }
-for feature, options in categorical_features.items():
-    input_data[feature] = st.selectbox(f'{feature}', options)
-
-# Text Inputs for Source and Destination
-st.markdown("### Enter Shipment Details")
 categories = ['Source', 'Destination']
+
+
+input_data = {}
+for feature in numerical_features:
+    input_data[feature] = st.number_input(f'Enter value for {feature}')
+
+
+for feature, options in categorical_features.items():
+    input_data[feature] = st.selectbox(f'Select {feature}', options)
+
 for feature in categories:
-    input_data[feature] = st.text_input(f"{feature}")
+    input_data[feature] = st.text_input(" Enter  : {}".format(feature))
 
-# Time Inputs
-st.markdown("### Enter Time Details (in Hours and Minutes)")
+st.write("Enter Actual Shipment Time")
+hours1 = st.selectbox("Select hours", list(range(0, 24)), key="hours1")
+minutes1 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes1")
+total_minutes1 = hours1 * 60 + minutes1
 
-def get_time_input(label, key_suffix):
-    st.write(f"{label}")
-    hours = st.selectbox("Hours", list(range(0, 24)), key=f"hours_{key_suffix}")
-    minutes = st.selectbox("Minutes", list(range(0, 60)), key=f"minutes_{key_suffix}")
-    return hours * 60 + minutes
+st.write("Enter Planned Shipment Time")
+hours2 = st.selectbox("Select hours", list(range(0, 24)), key="hours2")
+minutes2 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes2")
+total_minutes2 = hours2 * 60 + minutes2
 
-input_data['Actual_Shipment_Time'] = get_time_input("Actual Shipment Time", "1")
-input_data['Planned_Shipment_Time'] = get_time_input("Planned Shipment Time", "2")
-input_data['Planned_Delivery_Time'] = get_time_input("Planned Delivery Time", "3")
-input_data['Planned_TimeofTravel'] = get_time_input("Planned Time of Travel", "4")
-input_data['Shipment_Delay'] = get_time_input("Shipment Delay Time", "5")
+st.write("Enter Planned Delivery Time")
+hours3 = st.selectbox("Select hours", list(range(0, 24)), key="hours3")
+minutes3 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes3")
+total_minutes3 = hours3 * 60 + minutes3
 
-# DataFrame to hold input data
+st.write("Enter Planned Time of Travel")
+hours4 = st.selectbox("Select hours", list(range(0, 12)), key="hours4")
+minutes4 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes4")
+total_minutes4 = hours4 * 60 + minutes4
+
+st.write("Enter Shipment Delay Time")
+hours5 = st.selectbox("Select hours", list(range(0, 43)), key="hours5")
+minutes5 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes5")
+total_minutes5 = hours5 * 60 + minutes5
+
+# Store time inputs in input_data dictionary
+input_data['Actual_Shipment_Time'] = total_minutes1
+input_data['Planned_Shipment_Time'] = total_minutes2
+input_data['Planned_Delivery_Time'] = total_minutes3
+input_data['Planned_TimeofTravel'] = total_minutes4
+input_data['Shipment_Delay'] = total_minutes5
+
+
 input_df = pd.DataFrame([input_data])
 
-# Predict Button
-if st.button('Predict Delivery Status'):
+
+if st.button('Predict'):
     prediction = model.predict(input_df)
-    status = "On Time" if int(prediction[0]) == 1 else "Delayed"
-    st.markdown(f"## Prediction: **{status}**")
-
-    # Display Image Based on Prediction
+    st.write(f'Prediction: {int(prediction[0])}')
+    
     if int(prediction[0]) == 1:
-        st.image(r"_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg", width=400, caption="Your delivery is on time! 🚀")
-    else:
-        st.image(r"_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg", width=400, caption="Your delivery is delayed. 😞")
-
-# Footer
-st.markdown("""
-    <hr>
-    <footer style='text-align: center;'>
-        <p style='color: #666;'>FedEx Delivery Status Prediction | Powered by Streamlit</p>
-    </footer>
-    """, unsafe_allow_html=True)
+        st.image(r"_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg",width=400)
+    elif int(prediction[0]) == 0:
+        st.image(r"_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg",width=400)
