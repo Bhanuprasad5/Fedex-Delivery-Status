@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 
 # Load the pre-trained model
-model = pickle.load(open(r"Fedex.pkl", 'rb'))
+model = pickle.load(open("Fedex.pkl", 'rb'))
 
 # Set the title and subtitle
 st.title("FedEx Delivery Status Prediction")
@@ -55,20 +55,18 @@ input_data['Shipment_Delay'] = get_time_in_minutes("Shipment Delay Time")
 # Convert input data to DataFrame
 input_df = pd.DataFrame([input_data])
 
+# Debug: Display the input DataFrame
+st.write("### Input DataFrame for Debugging", input_df)
+
 # Display prediction
 if st.button('Predict Delivery Status'):
-    prediction = model.predict(input_df)
-    if int(prediction[0]) == 1:
-        st.success("Your delivery is predicted to be ON TIME!")
-        st.image("_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg", width=400, caption="Your delivery is on time! 🚀")
-    else:
-        st.warning("Your delivery is predicted to be DELAYED!")
-        st.image("_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg", width=400, caption="Your delivery is delayed. 😞")
-
-# Footer section
-st.markdown("""
-<style>
-    footer {visibility: hidden;}
-    .reportview-container .main .block-container{padding-top: 2rem;}
-</style>
-""", unsafe_allow_html=True)
+    try:
+        prediction = model.predict(input_df)
+        if int(prediction[0]) == 1:
+            st.success("Your delivery is predicted to be ON TIME!")
+            st.image("_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg", width=400, caption="Your delivery is on time! 🚀")
+        else:
+            st.warning("Your delivery is predicted to be DELAYED!")
+            st.image("_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg", width=400, caption="Your delivery is delayed. 😞")
+    except ValueError as e:
+        st.error(f"Prediction failed: {str(e)}")
