@@ -6,7 +6,7 @@ from PIL import Image
 # Load the pre-trained model
 model = pickle.load(open("Fedex.pkl", 'rb'))
 
-# Custom CSS to enhance visual appeal
+# Custom CSS to enhance visual appeal with larger, darker title
 st.markdown("""
     <style>
     body {
@@ -15,8 +15,8 @@ st.markdown("""
         color: #333;
     }
     .title {
-        
-        font-size: 2.5rem;
+        color: #2C3E50;  /* Darker color for the title */
+        font-size: 3rem;  /* Increased font size */
         text-align: center;
         font-weight: bold;
     }
@@ -48,8 +48,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Set the title and subtitle with enhanced styles
+# Set the title with updated size and color
 st.markdown("<div class='title'>FedEx Delivery Status Prediction</div>", unsafe_allow_html=True)
+
 
 # Display FedEx logo/image with optimized sizing
 st.image("573326-innomatics_research_labs_logo.png", width=150)
