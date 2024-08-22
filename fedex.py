@@ -31,13 +31,6 @@ st.markdown("""
     .stButton>button:hover {
         background-color: #0056b3;
     }
-    .input-box {
-        background-color: white;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
     .st-selectbox label, .st-number-input label, .st-text-input label {
         font-weight: bold;
         color: #333;
@@ -45,15 +38,11 @@ st.markdown("""
     .st-selectbox, .st-number-input, .st-text-input {
         border-radius: 5px;
     }
-    .title-box {
-        text-align: center;
-        margin-bottom: 40px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
 # Title
-st.markdown("<div class='title-box'><h1>FedEx Delivery Status Prediction 🚚</h1></div>", unsafe_allow_html=True)
+st.title("FedEx Delivery Status Prediction 🚚")
 
 # Subtitle
 st.subheader("Predict whether your FedEx shipment will be on time or delayed")
@@ -64,10 +53,7 @@ numerical_features = ['Carrier_Num', 'Distance']
 input_data = {}
 
 for feature in numerical_features:
-    with st.container():
-        st.markdown(f"<div class='input-box'><label>{feature}</label>", unsafe_allow_html=True)
-        input_data[feature] = st.number_input(f'{feature}', min_value=0, max_value=10000, value=0)
-        st.markdown("</div>", unsafe_allow_html=True)
+    input_data[feature] = st.number_input(f'{feature}', min_value=0, max_value=10000, value=0)
 
 # Categorical Features
 st.markdown("### Select Categorical Features")
@@ -79,29 +65,21 @@ categorical_features = {
     'Carrier_Name': ['WN', 'XE', 'YV', 'OH', 'OO', 'UA', 'US', 'DL', 'EV', 'F9', 'FL', 'HA', 'MQ', 'NW', '9E', 'AA', 'AQ', 'AS', 'B6', 'CO']
 }
 for feature, options in categorical_features.items():
-    with st.container():
-        st.markdown(f"<div class='input-box'><label>{feature}</label>", unsafe_allow_html=True)
-        input_data[feature] = st.selectbox(f'{feature}', options)
-        st.markdown("</div>", unsafe_allow_html=True)
+    input_data[feature] = st.selectbox(f'{feature}', options)
 
 # Text Inputs for Source and Destination
 st.markdown("### Enter Shipment Details")
 categories = ['Source', 'Destination']
 for feature in categories:
-    with st.container():
-        st.markdown(f"<div class='input-box'><label>{feature}</label>", unsafe_allow_html=True)
-        input_data[feature] = st.text_input(f"{feature}")
-        st.markdown("</div>", unsafe_allow_html=True)
+    input_data[feature] = st.text_input(f"{feature}")
 
 # Time Inputs
 st.markdown("### Enter Time Details (in Hours and Minutes)")
 
 def get_time_input(label, key_suffix):
-    with st.container():
-        st.markdown(f"<div class='input-box'><label>{label}</label>", unsafe_allow_html=True)
-        hours = st.selectbox("Hours", list(range(0, 24)), key=f"hours_{key_suffix}")
-        minutes = st.selectbox("Minutes", list(range(0, 60)), key=f"minutes_{key_suffix}")
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.write(f"{label}")
+    hours = st.selectbox("Hours", list(range(0, 24)), key=f"hours_{key_suffix}")
+    minutes = st.selectbox("Minutes", list(range(0, 60)), key=f"minutes_{key_suffix}")
     return hours * 60 + minutes
 
 input_data['Actual_Shipment_Time'] = get_time_input("Actual Shipment Time", "1")
