@@ -60,10 +60,10 @@ if st.button('Predict Delivery Status'):
     prediction = model.predict(input_df)
     if int(prediction[0]) == 1:
         st.success("Your delivery is predicted to be ON TIME!")
-        st.image(r"C:\Users\chouk\Downloads\_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg", width=400)
+        st.image(r"_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg", width=400)
     else:
         st.warning("Your delivery is predicted to be DELAYED!")
-        st.image(r"C:\Users\chouk\Downloads\_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg", width=400)
+        st.image(r"_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg", width=400)
 
 # Footer section
 st.markdown("""
