@@ -2,75 +2,72 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-model = pickle.load(open(r"Fedex.pkl",'rb'))
+# Load the pre-trained model
+model = pickle.load(open("Fedex.pkl", 'rb'))
 
-st.title("Delivery Status")
+# Set the title and subtitle
+st.title("FedEx Delivery Status Prediction")
+st.subheader("Predict the status of your FedEx delivery with ease")
 
+# Add a sidebar for inputs
+st.sidebar.header("Input Shipment Details")
+st.sidebar.write("Fill in the following details to predict the delivery status")
 
-numerical_features = ['Carrier_Num', 'Distance'] 
+# Define features
+numerical_features = ['Carrier_Num', 'Distance']
 categorical_features = {
-    'Year': [2008], 
-    'Month': [1, 2, 3, 4, 5, 6],  
+    'Year': [2008],
+    'Month': list(range(1, 13)),  # Updated for all months
     'DayofMonth': list(range(1, 32)),
-    'DayOfWeek': list(range(1, 8)),  
+    'DayOfWeek': list(range(1, 8)),
     'Carrier_Name': ['WN', 'XE', 'YV', 'OH', 'OO', 'UA', 'US', 'DL', 'EV', 'F9', 'FL',
-       'HA', 'MQ', 'NW', '9E', 'AA', 'AQ', 'AS', 'B6', 'CO']
+                     'HA', 'MQ', 'NW', '9E', 'AA', 'AQ', 'AS', 'B6', 'CO']
 }
 categories = ['Source', 'Destination']
 
-
+# Collect user inputs
 input_data = {}
 for feature in numerical_features:
-    input_data[feature] = st.number_input(f'Enter value for {feature}')
-
+    input_data[feature] = st.sidebar.number_input(f'Enter value for {feature}', min_value=0.0)
 
 for feature, options in categorical_features.items():
-    input_data[feature] = st.selectbox(f'Select {feature}', options)
+    input_data[feature] = st.sidebar.selectbox(f'Select {feature}', options)
 
 for feature in categories:
-    input_data[feature] = st.text_input(" Enter  : {}".format(feature))
+    input_data[feature] = st.sidebar.text_input(f"Enter {feature}")
 
-st.write("Enter Actual Shipment Time")
-hours1 = st.selectbox("Select hours", list(range(0, 24)), key="hours1")
-minutes1 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes1")
-total_minutes1 = hours1 * 60 + minutes1
+# Time inputs
+st.sidebar.write("Enter Times (in HH:MM format)")
 
-st.write("Enter Planned Shipment Time")
-hours2 = st.selectbox("Select hours", list(range(0, 24)), key="hours2")
-minutes2 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes2")
-total_minutes2 = hours2 * 60 + minutes2
+# Function to get time in minutes
+def get_time_in_minutes(label):
+    hours = st.sidebar.selectbox(f"{label} Hours", list(range(0, 24)), key=label+"h")
+    minutes = st.sidebar.selectbox(f"{label} Minutes", list(range(0, 60)), key=label+"m")
+    return hours * 60 + minutes
 
-st.write("Enter Planned Delivery Time")
-hours3 = st.selectbox("Select hours", list(range(0, 24)), key="hours3")
-minutes3 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes3")
-total_minutes3 = hours3 * 60 + minutes3
+# Input times
+input_data['Actual_Shipment_Time'] = get_time_in_minutes("Actual Shipment Time")
+input_data['Planned_Shipment_Time'] = get_time_in_minutes("Planned Shipment Time")
+input_data['Planned_Delivery_Time'] = get_time_in_minutes("Planned Delivery Time")
+input_data['Planned_TimeofTravel'] = get_time_in_minutes("Planned Time of Travel")
+input_data['Shipment_Delay'] = get_time_in_minutes("Shipment Delay Time")
 
-st.write("Enter Planned Time of Travel")
-hours4 = st.selectbox("Select hours", list(range(0, 12)), key="hours4")
-minutes4 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes4")
-total_minutes4 = hours4 * 60 + minutes4
-
-st.write("Enter Shipment Delay Time")
-hours5 = st.selectbox("Select hours", list(range(0, 43)), key="hours5")
-minutes5 = st.selectbox("Select minutes", list(range(0, 60)), key="minutes5")
-total_minutes5 = hours5 * 60 + minutes5
-
-# Store time inputs in input_data dictionary
-input_data['Actual_Shipment_Time'] = total_minutes1
-input_data['Planned_Shipment_Time'] = total_minutes2
-input_data['Planned_Delivery_Time'] = total_minutes3
-input_data['Planned_TimeofTravel'] = total_minutes4
-input_data['Shipment_Delay'] = total_minutes5
-
-
+# Convert input data to DataFrame
 input_df = pd.DataFrame([input_data])
 
+# Debug: Display the input DataFrame
+st.write("### Input DataFrame for Debugging", input_df)
 
-if st.button('Predict'):
-    prediction = model.predict(input_df)
-    st.write(f'Prediction: {int(prediction[0])}')
-    
-    if int(prediction[0]) == 1:
-        st.image(r"delivered.jpeg",width=400)
-    elif int(prediction[0]) == 0:
-        st.image(r"not.jpeg",width=400)
+# Display prediction
+if st.button('Predict Delivery Status'):
+    try:
+        prediction = model.predict(input_df)
+        if int(prediction[0]) == 1:
+            st.success("Your delivery is predicted to be ON TIME!")
+            st.image("delivered.jpeg", width=400, caption="Your delivery is on time! 🚀")
+        else:
+            st.warning("Your delivery is predicted to be DELAYED!")
+            st.image("not.jpeg", width=400, caption="Your delivery is delayed. 😞")
+    except ValueError as e:
+        st.error(f"Prediction failed: {str(e)}")
+
