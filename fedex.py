@@ -10,7 +10,7 @@ st.title("FedEx Delivery Status Prediction")
 st.image(r"573326-innomatics_research_labs_logo.png", width=200)
 # Display FedEx logo/image
 image = Image.open(r"fedex.png")
-st.image(image)
+st.image(image, use_column_width=True)
 
 st.subheader("Predict the status of your FedEx delivery with ease")
 
