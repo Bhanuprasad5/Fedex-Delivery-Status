@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pickle
+from PIL import Image
 
 # Load the pre-trained model
 model = pickle.load(open("Fedex.pkl", 'rb'))
