@@ -9,8 +9,6 @@ model = pickle.load(open(r"Fedex.pkl", 'rb'))
 # Set page config
 st.set_page_config(page_title="FedEx Delivery Status Prediction", layout="centered")
 
-# Display the company logo
-st.image(r"573326-innomatics_research_labs_logo.png", width=200)
 # Display FedEx logo/image
 image = Image.open(r"fedex.png")
 st.image(image, use_column_width=True)
@@ -18,12 +16,8 @@ st.image(image, use_column_width=True)
 # Custom CSS to enhance appearance
 st.markdown("""
     <style>
-    body {
-        background-color: #f7f9fc;
-        color: #333;
-    }
     .main {
-        background-color: #ffffff;
+        background-color: #f0f2f6;
         padding: 20px;
         border-radius: 10px;
         max-width: 800px;
@@ -44,7 +38,7 @@ st.markdown("""
         background-color: #0056b3;
     }
     .input-box {
-        background-color: #f1f1f1;
+        background-color: white;
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 20px;
@@ -56,12 +50,10 @@ st.markdown("""
     }
     .st-selectbox, .st-number-input, .st-text-input {
         border-radius: 5px;
-        background-color: #ffffff;
     }
     .title-box {
         text-align: center;
         margin-bottom: 40px;
-        color: #007BFF;
     }
     .footer {
         text-align: center;
@@ -71,7 +63,6 @@ st.markdown("""
     }
     hr {
         margin-top: 50px;
-        border: 1px solid #ddd;
     }
     </style>
     """, unsafe_allow_html=True)
