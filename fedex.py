@@ -4,7 +4,14 @@ import pickle
 
 model = pickle.load(open(r"Fedex.pkl",'rb'))
 
-st.title("Delivery Status")
+# Set page config
+st.set_page_config(page_title="FedEx Delivery Status Prediction", layout="centered")
+
+# Display FedEx logo/image
+image = Image.open(r"fedex.png")
+st.image(image, use_column_width=True)
+
+
 
 
 numerical_features = ['Carrier_Num', 'Distance'] 
