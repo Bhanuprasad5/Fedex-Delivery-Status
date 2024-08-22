@@ -71,6 +71,6 @@ if st.button('Predict'):
     st.write(f'Prediction: {int(prediction[0])}')
     
     if int(prediction[0]) == 1:
-        st.image(r"_48d14ee4-11a2-46a8-b205-65fad183fa68.jpeg",width=400)
+        st.image(r"delivered.jpeg",width=400)
     elif int(prediction[0]) == 0:
-        st.image(r"_94d74535-a96e-4e10-be4b-f264ecf6c07a.jpeg",width=400)
+        st.image(r"not.jpeg",width=400)
