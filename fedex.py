@@ -1,17 +1,12 @@
 import streamlit as st
 import pandas as pd
 import pickle
-from PIL import Image
 
 # Load the model
 model = pickle.load(open(r"Fedex.pkl", 'rb'))
 
 # Set page config
 st.set_page_config(page_title="FedEx Delivery Status Prediction", layout="centered")
-
-# Display FedEx logo/image
-image = Image.open(r"fedex.png")
-st.image(image, use_column_width=True)
 
 # Custom CSS to enhance appearance
 st.markdown("""
@@ -32,7 +27,6 @@ st.markdown("""
         padding: 10px;
         font-size: 16px;
         cursor: pointer;
-        width: 100%;
     }
     .stButton>button:hover {
         background-color: #0056b3;
@@ -54,15 +48,6 @@ st.markdown("""
     .title-box {
         text-align: center;
         margin-bottom: 40px;
-    }
-    .footer {
-        text-align: center;
-        color: #666;
-        padding: 20px;
-        font-size: 14px;
-    }
-    hr {
-        margin-top: 50px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -143,7 +128,7 @@ if st.button('Predict Delivery Status'):
 # Footer
 st.markdown("""
     <hr>
-    <div class='footer'>
-        FedEx Delivery Status Prediction | Powered by Streamlit
-    </div>
+    <footer style='text-align: center;'>
+        <p style='color: #666;'>FedEx Delivery Status Prediction | Powered by Streamlit</p>
+    </footer>
     """, unsafe_allow_html=True)
